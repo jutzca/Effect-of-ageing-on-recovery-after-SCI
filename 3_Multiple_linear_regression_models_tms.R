@@ -181,6 +181,69 @@ ggplot(data = emsci.filtered.tms, aes(x = age_groups_relabelled, y = MS_TOT_delt
 
 
 
+# ------ Multiple linear regression models using delta total MS as outcome, models are stratified for motor complete (AIS A) vs incomplete (AISB-D) ------
+
+# Create new grouping of AIS grades: mt_complete and mt_incomplete
+
+# Create new variable with two levels: "A" and "BCD"
+emsci.filtered.tms$mt_complete_incomplete <- ifelse(emsci.filtered.tms$AIS.grades.baseline == "A", "A", "BCD")
+
+# Convert to factor (optional)
+emsci.filtered.tms$mt_complete_incomplete <- factor(emsci.filtered.tms$mt_complete_incomplete, levels = c("A", "BCD"))
+
+
+# Create an empty list to store model objects
+model_list <- list()
+
+
+# Fit a linear regression model for each unique AIS grade level
+for (grade_level in unique(emsci.filtered.tms$mt_complete_incomplete)) {
+  # Subset the data for the current grade level
+  subset_data <- emsci.filtered.tms %>% filter(emsci.filtered.tms$mt_complete_incomplete == grade_level)
+  
+  # Fit a linear regression model
+  model <- lm(MS_TOT_delta ~ yeardoi+AgeAtDOI + Sex + new_nli_cat+ plegia + MS_tot_baseline, data = subset_data)
+  
+  # Store the model in the list
+  model_list[[as.character(grade_level)]] <- model
+  
+}
+
+# Combine model summaries using tab_model
+combined_summary <- tab_model(model_list)
+
+# Print the combined model summary
+print(combined_summary)
+
+
+# Create a box plot of TMS scores for each AIS_grade
+
+my_colors <- c("#F3F2F2", "#9C1402", "#2ECC71", "#F1C40F", "#9B59B6")
+
+ggplot(data = emsci.filtered.tms, aes(x = age_groups_relabelled, y = MS_TOT_delta)) +
+  geom_violin(trim = FALSE) +  # Create the violin plot
+  geom_boxplot(width = 0.2, fill = "white") +  
+  facet_wrap(~ emsci.filtered.tms$mt_complete_incomplete) +  # Create separate plots for each AIS_grade
+  geom_violin(trim = FALSE, fill = my_colors[1]) +  # Create the violin plot
+  geom_boxplot(width = 0.2, fill = "white", color = my_colors[2]) +  # Create the box plot
+  labs(x = "AIS Grade", y = "TMS Scores", title = "Delta TMS Scores by AIS Grade") +
+  theme_light() +  # Minimalistic plot theme
+  theme(plot.title = element_text(size = 16, face = "bold"),  # Title customization
+        axis.title.x = element_text(size = 14, face = "bold"),  # X-axis label customization
+        axis.title.y = element_text(size = 14, face = "bold"),  # Y-axis label customization
+        axis.text.x = element_text(size = 12),  # X-axis text customization
+        axis.text.y = element_text(size = 12),  # Y-axis text customization
+        strip.text = element_text(size=12),
+        panel.grid.major = element_blank(),  # Remove grid lines
+        legend.position = "none")  # Remove legend
+
+
+
+
+
+
+
+
 
 
 #### -----------------------------q--------------------------------------------- CODE END ------------------------------------------------------------------------------------------------####
