@@ -48,19 +48,19 @@ library(sjlabelled)
 ##
 ## R Studio Clean-Up:
 cat("\014") # clear console
-rm(list=ls()) # clear workspace
+rm(list=ls()) # clear work space
 gc() # garbage collector
 ##
 ## ---------------------------
 ##
 ## Set working directory 
-setwd("/Users/jutzelec/Documents/Github/Ageing-in-Spinal-Cord-Injury/")
+setwd("/Github/Ageing-in-Spinal-Cord-Injury/")
 ##
 ## ---------------------------
 ##
-## Set output directorypaths
-outdir_figures='/Users/jutzelec/Documents/Github/Ageing-in-Spinal-Cord-Injury/Figures'
-outdir_tables='/Users/jutzelec/Documents/Github/Ageing-in-Spinal-Cord-Injury/Tables'
+## Set output directory paths
+outdir_figures='/Github/Ageing-in-Spinal-Cord-Injury/Figures'
+outdir_tables='/Github/Ageing-in-Spinal-Cord-Injury/Tables'
 ##
 ##
 #### -------------------------------------------------------------------------- CODE START ------------------------------------------------------------------------------------------------####
